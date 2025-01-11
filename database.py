@@ -3,7 +3,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker 
 import os
 
-DATABASE = os.getenv("DATABASE_URL")
+DATABASE = "postgresql://postgres:Suyoom14@localhost/fashion_db"
 
 engine = create_engine(DATABASE)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
