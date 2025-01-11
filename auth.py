@@ -7,9 +7,13 @@ from fastapi import Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from database import get_db
 from models import Users
+import os
 
 # Configuration for JWT
-SECRET_KEY = "039529ae725c445dcf748b96f1694b43818f0506ea27656321a5cecb69b6"
+SECRET_KEY = os.getenv("Secret_KEY")
+if SECRET_KEY is None:
+    raise ValueError("No Secret key in env")
+
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
