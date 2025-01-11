@@ -1,331 +1,145 @@
 # Fashion Items API
 
-A RESTful API built with FastAPI for managing fashion items with JWT authentication. The API provides secure endpoints for creating, reading, updating, and deleting fashion items, along with user registration and authentication.
-
----
+## Overview
+Fashion Items API is a RESTful API built using FastAPI for managing fashion items. It provides secure endpoints for user registration, login, and CRUD operations on fashion items, with JWT authentication and secure password hashing.
 
 ## Features
-
-- User authentication with JWT tokens
-- Secure password hashing using bcrypt
+- User authentication using JWT tokens
+- Secure password hashing with bcrypt
 - CRUD operations for fashion items
-- Input validation using Pydantic models
-- PostgreSQL database integration
-- Protected endpoints with OAuth2
+- Input validation with Pydantic models
+- Integration with PostgreSQL for data storage
+- Protected endpoints with OAuth2 for user access
 - User registration and login system
 
----
-
 ## Tech Stack
-
-- **FastAPI**
-- **PostgreSQL**
-- **SQLAlchemy ORM**
-- **Pydantic**
-- **Python-Jose (JWT)**
-- **Passlib (Password Hashing)**
-- **Python 3.x**
-
----
+- FastAPI
+- PostgreSQL
+- SQLAlchemy ORM
+- Pydantic
+- Python-Jose (JWT)
+- Passlib (Password Hashing)
+- Python 3.x
 
 ## Prerequisites
-
 - Python 3.x
-- PostgreSQL
+- PostgreSQL database
 - pip (Python package manager)
 
----
-
 ## Installation
+1. **Clone the Repository:**
+   ```bash
+   git clone https://github.com/SwayamKalambe/restful-api.git
+   cd <repository-directory>
+   ```
 
-### 1. Clone the repository
-```bash
-git clone https://github.com/SwayamKalambe/restful-api.git
-cd <repository-directory>
-```
+2. **Install Required Packages:**
+   ```bash
+   pip install fastapi[all] sqlalchemy psycopg2-binary python-jose[cryptography] passlib[bcrypt]
+   ```
 
-### 2. Install required packages
-```bash
-pip install fastapi[all] sqlalchemy psycopg2-binary python-jose[cryptography] passlib[bcrypt]
-```
+3. **Configure the Database:**
+   - Create a PostgreSQL database.
+   - Update the `DATABASE` URL in `database.py`:
+     ```python
+     import os
+     DATABASE = os.getenv("DATABASE_URL")
+     ```
+   
+4. **Generate and Configure the Secret Key:**
+   - The secret key used for JWT authentication should be securely generated and stored in an environment variable.
+   - To generate a secret key:
+     ```python
+     import secrets
+     print(secrets.token_hex(32))
+     ```
+     This will generate a secure 64-character hexadecimal string.
+   
+   - Store the secret key in the `.env` file:
+     ```bash
+     SECRET_KEY="your_generated_secret_key_here"
+     ```
 
-### 3. Configure the database
-- Create a PostgreSQL database.
-- Update the database URL in `database.py`:
-  ```python
-  DATABASE = "postgresql://username:password@localhost/fashion_db"
-  ```
+5. **Create Database Tables:**
+   - Run the following command to initialize the database:
+     ```bash
+     python create_table.py
+     ```
 
-### 4. Create database tables
-Run the following command to initialize the database:
-```bash
-python create_table.py
-```
-
-### 5. Start the application
-Run the server locally:
-```bash
-uvicorn main:app --reload
-```
-
-The application will be available at `http://localhost:8000`.
-
----
+6. **Start the Application:**
+   - Run the server locally:
+     ```bash
+     uvicorn main:app --reload
+     ```
+   - The application will be available at `http://localhost:8000`.
 
 ## Project Structure
-
-```
-├── main.py           # Main application and API routes
-├── models.py         # SQLAlchemy models
-├── schema.py         # Pydantic models for request/response
-├── database.py       # Database configuration
-├── auth.py           # Authentication logic
-└── create_table.py   # Database initialization
-```
-
----
+- `main.py`: Main application and API routes.
+- `models.py`: SQLAlchemy models for database tables.
+- `schema.py`: Pydantic models for request and response validation.
+- `database.py`: Database configuration and session management.
+- `auth.py`: Authentication logic including JWT handling.
+- `create_table.py`: Script for initializing the database tables.
 
 ## API Endpoints
 
 ### Authentication Endpoints
+- **POST /register**  
+  Registers a new user with a unique username and email.
+  
+- **POST /token**  
+  Authenticates a user and provides a JWT token for accessing protected endpoints.
 
-#### **Register User**
-Registers a new user with a unique username and email.
+### Fashion Items Endpoints (Protected)
+All fashion item-related endpoints require authentication via a Bearer token.
 
-**Request**:
-```http
-POST /register
-Content-Type: application/json
+- **GET /items**  
+  Retrieves a list of all fashion items in the store.
+  
+- **POST /items**  
+  Adds a new fashion item to the store.
 
-{
-  "username": "string",
-  "email": "user@example.com",
-  "password": "string"
-}
-```
-**Response**:
-```json
-{
-  "id": 1,
-  "username": "string",
-  "email": "user@example.com"
-}
-```
+- **GET /items/{item_id}**  
+  Retrieves details of a specific fashion item by its ID.
 
-#### **Login**
-Authenticates a user and provides a JWT token.
+- **PUT /items/{item_id}**  
+  Updates an existing fashion item.
 
-**Request**:
-```http
-POST /token
-Content-Type: application/x-www-form-urlencoded
+- **PATCH /items/{item_id}**  
+  Partially updates specific fields of a fashion item.
 
-username=<username>&password=<password>
-```
-**Response**:
-```json
-{
-  "access_token": "<token>",
-  "token_type": "bearer"
-}
-```
-
----
-
-### Fashion Items Endpoints
-
-All fashion item endpoints require authentication (Bearer token).
-
-#### **Get All Items**
-Retrieves a list of fashion items.
-
-**Request**:
-```http
-GET /items
-Authorization: Bearer <token>
-```
-**Response**:
-```json
-[
-  {
-    "id": 1,
-    "name": "Summer Dress",
-    "price": 49.99,
-    "description": "Beautiful summer dress"
-  },
-  {
-    "id": 2,
-    "name": "Winter Coat",
-    "price": 99.99,
-    "description": "Warm and stylish winter coat"
-  }
-]
-```
-
-#### **Create Item**
-Adds a new fashion item.
-
-**Request**:
-```http
-POST /items
-Authorization: Bearer <token>
-Content-Type: application/json
-
-{
-  "name": "string",
-  "price": float,
-  "description": "string"
-}
-```
-**Response**:
-```json
-{
-  "id": 3,
-  "name": "string",
-  "price": float,
-  "description": "string"
-}
-```
-
-#### **Get Item by ID**
-Retrieves a specific fashion item by ID.
-
-**Request**:
-```http
-GET /items/{item_id}
-Authorization: Bearer <token>
-```
-**Response**:
-```json
-{
-  "id": 1,
-  "name": "Summer Dress",
-  "price": 49.99,
-  "description": "Beautiful summer dress"
-}
-```
-
-#### **Update Item**
-Updates an existing fashion item.
-
-**Request**:
-```http
-PUT /items/{item_id}
-Authorization: Bearer <token>
-Content-Type: application/json
-
-{
-  "name": "string",
-  "price": float,
-  "description": "string"
-}
-```
-**Response**:
-```json
-{
-  "id": 1,
-  "name": "string",
-  "price": float,
-  "description": "string"
-}
-```
-
-#### **Partial Update Item**
-Updates specific fields of a fashion item.
-
-**Request**:
-```http
-PATCH /items/{item_id}
-Authorization: Bearer <token>
-Content-Type: application/json
-
-{
-  "name": "string",
-  "price": float
-}
-```
-**Response**:
-```json
-{
-  "id": 1,
-  "name": "string",
-  "price": float,
-  "description": "Beautiful summer dress"
-}
-```
-
-#### **Delete Item**
-Deletes a fashion item by ID.
-
-**Request**:
-```http
-DELETE /items/{item_id}
-Authorization: Bearer <token>
-```
-**Response**:
-```json
-{
-  "detail": "Item deleted successfully"
-}
-```
-
----
+- **DELETE /items/{item_id}**  
+  Deletes a fashion item by its ID.
 
 ## Data Models
 
-### Fashion Item
-```json
-{
-  "id": int,
-  "name": string,
-  "price": float,
-  "description": string
-}
-```
+- **Fashion Item:**  
+  Contains attributes such as `id`, `name`, `price`, and `description`.
 
-### User
-```json
-{
-  "username": string,
-  "email": string,
-  "password": string  # Stored as hashed value
-}
-```
-
----
+- **User:**  
+  Contains `username`, `email`, and `password` (hashed for security).
 
 ## Security
+- **Password Hashing:**  
+  Passwords are securely hashed using bcrypt before being stored in the database.
 
-- Passwords are hashed using bcrypt.
-- JWT tokens expire after 30 minutes.
-- Protected routes require a valid JWT token.
-- Email and username uniqueness validation.
-- Input validation using Pydantic models.
+- **JWT Authentication:**  
+  JWT tokens are used to authenticate users, with tokens expiring after 30 minutes.
 
----
+- **Protected Routes:**  
+  Endpoints for managing fashion items require a valid JWT token for access.
+
+- **Input Validation:**  
+  Pydantic models are used for request/response validation to ensure data integrity.
 
 ## Error Handling
-
-The API implements proper error handling for:
+The API includes comprehensive error handling for:
 - Invalid credentials
-- Duplicate email/username
+- Duplicate email or username during registration
 - Item not found
-- Invalid token
+- Invalid or expired JWT tokens
 - Validation errors
 
-Example Error Response:
-```json
-{
-  "detail": "Invalid credentials"
-}
-```
-
----
-
 ## Development Notes
-
-- The secret key in `auth.py` should be moved to environment variables in production.
-- Database URL should be configured via environment variables.
-- Implement proper logging for production use.
-- Consider adding rate limiting for production deployment.
-
+- **Logging and Rate Limiting:**  
+  Consider implementing logging and rate limiting for production deployment to enhance security and monitor performance.
