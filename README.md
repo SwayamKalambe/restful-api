@@ -40,7 +40,7 @@ A RESTful API built with FastAPI for managing fashion items with JWT authenticat
 
 ### 1. Clone the repository
 ```bash
-git clone <repository-url>
+git clone https://github.com/SwayamKalambe/restful-api.git
 cd <repository-directory>
 ```
 
