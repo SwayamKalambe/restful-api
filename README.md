@@ -33,12 +33,23 @@ Fashion Items API is a RESTful API built using FastAPI for managing fashion item
    cd <repository-directory>
    ```
 
-2. **Install Required Packages:**
+2. **Install Required Packages: requirements.txt**
+      ```bash
+      bcrypt==4.2.1
+      fastapi==0.115.6
+   fastapi-jwt-auth==0.5.0
+   jose==1.0.0
+   passlib==1.7.4
+   psycopg2-binary==2.9.10
+   pydantic==2.10.4
+   SQLAlchemy==2.0.36
+   uvicorn==0.34.0
+      ```
    ```bash
-   pip install fastapi[all] sqlalchemy psycopg2-binary python-jose[cryptography] passlib[bcrypt]
+   pip install -r requirements.txt
    ```
 
-3. **Configure the Database:**
+4. **Configure the Database:**
    - Create a PostgreSQL database.
    - Update the `DATABASE` URL in `database.py`:
      ```python
@@ -46,7 +57,7 @@ Fashion Items API is a RESTful API built using FastAPI for managing fashion item
      DATABASE = os.getenv("DATABASE_URL")
      ```
    
-4. **Generate and Configure the Secret Key:**
+5. **Generate and Configure the Secret Key:**
    - The secret key used for JWT authentication should be securely generated and stored in an environment variable.
    - To generate a secret key:
      ```python
@@ -60,13 +71,13 @@ Fashion Items API is a RESTful API built using FastAPI for managing fashion item
      SECRET_KEY="your_generated_secret_key_here"
      ```
 
-5. **Create Database Tables:**
+6. **Create Database Tables:**
    - Run the following command to initialize the database:
      ```bash
      python create_table.py
      ```
 
-6. **Start the Application:**
+7. **Start the Application:**
    - Run the server locally:
      ```bash
      uvicorn main:app --reload
