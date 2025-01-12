@@ -13,7 +13,7 @@ class DeleteFashionItem(FashionItem):
     id: int = Field(..., title="ID of the item to delete")
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class UpdateFashionItem(FashionItem):
     pass
@@ -23,7 +23,7 @@ class FashionItemResponse(FashionItem):
 
 
     class Config:
-        orm_mode = True
+        from_attributes = True
     
 
 class UserCreate(BaseModel):
