@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   web:
     build: .             
@@ -20,4 +18,4 @@ services:
       - postgres_data:/var/lib/postgresql/data  
 
 volumes:
-  postgres_data:          
+  postgres_data:
