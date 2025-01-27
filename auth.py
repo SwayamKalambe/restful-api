@@ -8,15 +8,19 @@ from sqlalchemy.orm import Session
 from database import get_db
 from models import Users
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 # Configuration for JWT
-SECRET_KEY = os.getenv("Secret_KEY")
+SECRET_KEY = os.getenv("SECRET_KEY")
 if SECRET_KEY is None:
     raise ValueError("No Secret key in env")
 
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
-
+    
 # Password hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -68,7 +72,7 @@ async def get_current_user(
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(token, SECRET_KEY, algorithms=ALGORITHM)
         username: str = payload.get("sub")
         if username is None:
             raise credentials_exception
