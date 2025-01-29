@@ -18,7 +18,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 if SECRET_KEY is None:
     raise ValueError("No Secret key in env")
 
-ALGORITHM = "HS256"
+ALGORITHM = os.getenv("ALGORITHM")
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
     
 # Password hashing
