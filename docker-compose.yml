@@ -7,6 +7,7 @@ services:
       - db               
     environment:
       - DATABASE_URL=${DATABASE_URL}  
+      - SECRET_KEY=${SECRET_KEY}
     command: uvicorn main:app --host 0.0.0.0 --port 80
  
   db:
