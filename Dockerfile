@@ -9,4 +9,9 @@ COPY . .
 
 EXPOSE 8000
 
-CMD ["fastapi", "run", "main.py"]
+
+COPY entrypoint.sh /app/entrypoint.sh
+RUN chmod +x /app/entrypoint.sh
+
+
+ENTRYPOINT ["/app/entrypoint.sh"]
